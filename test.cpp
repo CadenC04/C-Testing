@@ -11,6 +11,18 @@ using namespace std;
 	cin >> C;
 */
 
+double solveAngles(double a, double b, double c, double A, double B, double C) {
+	if (A == -1) {
+		//solve for A
+		return acos(((b * b) + (c * c) - (a * a)) / (2 * b * c));
+	} else if (B == -1) {
+		//solve for B
+		return acos(((c * c) + (a * a) - (b * b)) / (2 * c * a));
+	} else if (C == -1) {
+		//solve for C
+	}
+}
+
 double pythagThe(double x, double y, double z) {
 	if (z != 0) {
 		if (x != 0) {
@@ -58,9 +70,21 @@ int getMissing() {
 		}
     } else if (a != 0 && b != 0 && c != 0) {
                 // can solve for angles
+				A = solveAngles(a, b, c, -1, 0, 0);
+				B = solveAngles(a, b, c, 0, -1, 0);
+				C = solveAngles(a, b, c, 0, 0, -1);
+
 	} else if (a == 0 && b == 0 && c == 0) {
+				cout << "Enter angle A: ";
+				cin >> A;
+				cout << "Enter angle B: ";
+				cin >> B;
+				cout << "Enter angle C: ";
+				cin >> C;
                 // cannot get side lengths
-    } 
+    } else {
+
+	}
 
 	cout << "Side A: " << a << " Side B: " << b << " Side C: " << c << " " << "\n";
 
