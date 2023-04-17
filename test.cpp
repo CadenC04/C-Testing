@@ -17,8 +17,18 @@ void solveSides(double& a, double& b, double& c, double A, double B, double C) {
 		a = (c*sin(AA)/sin(CC));
 		b = (c*sin(BB)/sin(CC));
 	}
+	if (a < 0 || b < 0 || c < 0 || A < 0 || B < 0 || C < 0) {
+		cout << "Invalid Triangle" << "\n" << "\n";
+		return;
+	} else if ((A + B + C) > 180) {
+		cout << "Invalid Triangle" << "\n" << "\n";
+		return;
+	} else if ((A + B + C) < 180) {
+		cout << "Invalid Triangle" << "\n" << "\n";
+		return;
+	}
 	cout << "\n" << "Angle A, B, C: " << A << ", " << B << ", " << C;
-	cout << "\n" << "Side a, b, c: " << a << ", " << b << ", " << c << "\n";
+	cout << "\n" << "Side a, b, c: " << a << ", " << b << ", " << c << "\n" << "\n" << "\n";
 }
 
 void getAngles(double a, double b, double c, double& A, double& B, double& C) {
@@ -78,8 +88,18 @@ void solveAngles(double a, double b, double c, double& A, double& B, double& C) 
 	A = (acos(((b * b) + (c * c) - (a * a)) / (2 * b * c))) * (180/M_PI);
 	B = (acos(((c * c) + (a * a) - (b * b)) / (2 * c * a))) * (180/M_PI);
 	C = (acos(((a * a) + (b * b) - (c * c)) / (2 * a * b))) * (180/M_PI);
+	if (a < 0 || b < 0 || c < 0 || A < 0 || B < 0 || C < 0) {
+		cout << "Invalid Triangle" << "\n" << "\n";
+		return;
+	} else if ((A + B + C) > 180) {
+		cout << "Invalid Triangle" << "\n" << "\n";
+		return;
+	} else if ((A + B + C) < 180) {
+		cout << "Invalid Triangle" << "\n" << "\n";
+		return;
+	}
 	cout << "\n" << "Angle A, B, C: " << A << ", " << B << ", " << C;
-	cout << "\n" << "Side a, b, c: " << a << ", " << b << ", " << c << "\n";
+	cout << "\n" << "Side a, b, c: " << a << ", " << b << ", " << c << "\n" << "\n" << "\n";
 }
 
 void pythagThero(double& a, double& b, double& c, double& A, double& B, double& C) {
@@ -142,17 +162,42 @@ void getData(double& a, double& b, double& c, double& A, double& B, double& C) {
 	cout << "    /      |" << "\n" << "  A/_______|B" << "\n" << "       c"; 
 	cout << "\n" << "\n";
 	cout << "Enter side a: ";
-	cin >> a;
+	cina: cin >> a;
+	if (a < 0) {
+		cout << "Please enter a non-negative number: ";
+		goto cina;
+	}
 	cout << "Enter side b: ";
-	cin >> b;
+	cinb: cin >> b;
+	if (b < 0) {
+		cout << "Please enter a non-negative number: ";
+		goto cinb;
+	}
 	cout << "Enter side c: ";
-	cin >> c;
+	cinc: cin >> c;
+	if (c < 0) {
+		cout << "Please enter a non-negative number: ";
+		goto cinc;
+	}
 	cout << "Enter angle A: ";
-	cin >> A;
+	cinA: cin >> A;
+	if (A < 0) {
+		cout << "Please enter a non-negative number: ";
+		goto cinA;
+	}
 	cout << "Enter angle B: ";
-	cin >> B;
+	cinB: cin >> B;
+	if (B < 0) {
+		cout << "Please enter a non-negative number: ";
+		goto cinB;
+	}
 	cout << "Enter angle C: ";
-	cin >> C;
+	cinC: cin >> C;
+	if (C < 0) {
+		cout << "Please enter a non-negative number: ";
+		goto cinC;
+	}
+
 	getEquation(a, b, c, A, B, C);
 }
 
