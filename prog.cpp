@@ -6,10 +6,21 @@
 using namespace std;
 
 void calcCent(int points[][2], int pCount) {
-
+double Cx;
+double Cy;
+double Aix;
+double Aiy;
     for (int i = 0; i < pCount; i++) {
-
+        Aix += points[i][0];
+        Aiy += points[i][1];
+        cout << points[i][0] << " ";
+        cout << points[i][1] << " ";
     }
+    Cx = (Aix / pCount);
+    Cy = (Aiy / pCount);
+    cout << Aix << " " << Aiy << "\n";
+    cout << "Centroid X: " << Cx << "\n";
+    cout << "Centroid Y: " << Cy << "\n";
 }
 
 
@@ -32,10 +43,21 @@ void getData() {
     calcCent(points, pCount);
 }
 
+void breakdownShape() {
+    
+}
+
 
 
 int main() {
-    getData();
+    string type;
+    cout << "Please enter the type of shape: (complex or simple N-Sided polygon)";
+    cin >> type;
+    if (type == "complex") {
+        breakdownShape();
+    } else {
+        getData();
+    }
     return 0;
 }
 
