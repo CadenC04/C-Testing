@@ -49,6 +49,7 @@ void simpleShape(double& Cx, double& Cy, double& Ca) {
     cout << "\n" << "Please base your coordinates off of 0, 0 expanding in the positive direction." << "\n" << "Negative numbers will NOT work." << "\n";
     cout << "Please enter the number corresponding to the shape you wish to enter: " << "\n";
     cout << "1) Rectangle/Square" << "\n" << "2) Triangle" << "\n" << "3) Circular Shape" << "\n";
+    cout << "Enter here: ";
     cin >> type;
     getData(type, x, y, a);
     Cx = x;
@@ -153,49 +154,76 @@ void getTriangle(double & x, double& y, double& a) {
 }
 
 void getCircle(int subType, double & x, double& y, double& a) {
-    double xx;
-    double yy;
-    double rr;
+    double xOrig;
+    double yOrig;
+    double radius;
     cout << "Please enter X: ";
-    cin >> xx;
+    cin >> xOrig;
     cout << "Please enter Y: ";
-    cin >> yy;
+    cin >> yOrig;
     cout << "Please enter r: ";
-    cin >> rr;
-    if (subType == 1) {
-        x = xx;
-        y = yy;
-        a = (M_PI * pow(rr, 2));
-    } else if (subType == 2) {
-        double angle;
+    cin >> radius;
+    if (subType == 1) { // Regular Circle
+        x = xOrig;
+        y = yOrig;
+        a = (M_PI * pow(radius, 2));
+    } else if (subType == 2) { // Semi-Circle
+        double angleOffset;
         cout << "Please enter the degrees of rotation: ";
-        cin >> angle;
-        angle = (angle * (M_PI/180));
-        double ty;
-        ty = ((4 * rr) / (3 * M_PI));
-        if (angle == 0) {
-            x = xx;
-            y = ty;
+        cin >> angleOffset;
+        double centroid;
+        centroid = ((4 * radius) / (3 * M_PI));
+        if (angleOffset == 0) {
+            x = xOrig;
+            y = centroid;
+        } else { 
+        angleOffset = angleOffset + 90.0;
+        cout << angleOffset;
+        if (angleOffset == 180) {
+            x = ((centroid) * (cos(angleOffset * (M_PI/180))));
+            y = yOrig;
+        } else if (angleOffset == 270) {
+            x = xOrig;
+            y = ((centroid) * (sin(angleOffset * (M_PI/180))));
+        } else if (angleOffset == 0) {
+            x = ((centroid) * (cos(angleOffset * (M_PI/180))));
+            y = yOrig;
         } else {
-        x = (ty * (cos(angle)));
-        y = (ty * (sin(angle)));
+            x = ((centroid) * (cos(angleOffset * (M_PI/180))));
+            y = ((centroid) * (sin(angleOffset * (M_PI/180))));
         }
-        a = ((M_PI * pow(rr, 2)) / 2);
-    } else {
-        double angle;
+        }
+        a = ((M_PI * pow(radius, 2)) / 2);
+    } else { // Quarter Circle
+        double angleOffset;
         cout << "Please enter the degrees of rotation: ";
-        cin >> angle;
-        angle = (angle * (M_PI/180));
-        double ty;
-        ty = ((4 * rr) / (3 * M_PI));
-        if (angle == 0) {
-            x = ty;
-            y = ty;
-        } else {
-        x = (ty * (cos(angle)));
-        y = (ty * (sin(angle)));
+        cin >> angleOffset;
+        double centroid;
+        centroid = ((4 * radius) / (3 * M_PI));
+        angleOffset = angleOffset + 45;
+        if (angleOffset == 90) {
+            x = xOrig;
+            y = yOrig + centroid;
+        } else if (angleOffset == 135) {
+            x = xOrig + (centroid * -1);
+            y = yOrig + centroid;
+        } else if (angleOffset == 180) {
+            x = xOrig + (centroid * -1);
+            y = yOrig;
+        } else if (angleOffset == 225) {
+            x = xOrig + (centroid * -1);
+            y = yOrig + (centroid * -1);
+        } else if (angleOffset == 270) {
+            x = xOrig;
+            y = yOrig + (centroid * -1);
+        } else if (angleOffset == 315) {
+            x = xOrig + centroid;
+            y = yOrig + (centroid * -1);
+        } else if (angleOffset == 0) {
+            x = xOrig + centroid;
+            y = yOrig;
         }
-        a = ((M_PI * pow(rr, 2)) / 4);
+        a = ((M_PI * pow(radius, 2)) / 4);
     }
 }
 
