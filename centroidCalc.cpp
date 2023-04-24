@@ -5,33 +5,59 @@
 
 using namespace std;
 
-void breakdownShape();
+void complexShape(double& Cx, double& Cy, double& Ca);
+void simpleShape(double& Cx, double& Cy, double& Ca);
 void getData(int val, double& x, double& y, double& a);
 void getRect(double& x, double& y, double& a);
 void getTriangle(double & x, double& y, double& a);
 void getCircle(int subType, double & x, double& y, double& a);
-void getCircularSector();
-void getArc();
-void getSpandrel();
+void getCircularSector(double & x, double& y, double& a);
 void signum(double& a);
+void solveCentroid(double shapes[][3], int sCount, double& Cx, double& Cy, double& Ca);
 
 int main() {
+    restart:
     string type;
+    double Cx;
+    double Cy;
+    double Ca;
     cout << "Is it a 'complex', or a 'simple' shape?: ";
     cin >> type;
     if (type == "complex") {
-        breakdownShape();
+        complexShape(Cx, Cy, Ca);
+    } else {
+        simpleShape(Cx, Cy, Ca);
+    }
+    string again;
+    cout << "Centroid X: " << Cx << ", " << "Centroid Y: " << Cy << ", " << "Total Area: " << Ca;
+    cout << "\n" << "\n" << "Restart? yes/no: ";
+    cin >> again;
+    if (again == "yes") {
+        cout << "\n \n \n \n \n";
+        goto restart;
     } else {
         return 0;
     }
     return 0;
 }
 
-void breakdownShape() {
+void simpleShape(double& Cx, double& Cy, double& Ca) {
+    int type;
+    double x;
+    double y;
+    double a;
+    cout << "\n" << "Please base your coordinates off of 0, 0 expanding in the positive direction." << "\n" << "Negative numbers will NOT work." << "\n";
+    cout << "Please enter the number corresponding to the shape you wish to enter: " << "\n";
+    cout << "1) Rectangle/Square" << "\n" << "2) Triangle" << "\n" << "3) Circular Shape" << "\n";
+    cin >> type;
+    getData(type, x, y, a);
+    Cx = x;
+    Cy = y;
+    Ca = a;
+}
+
+void complexShape(double& Cx, double& Cy, double& Ca) {
     int sCount;
-    double Cx;
-    double Cy;
-    double Ca;
     cout << "How many simple shapes make up the composite shape?: ";
     cin >> sCount;
     double shapes[sCount][3];
@@ -40,16 +66,20 @@ void breakdownShape() {
         double y;
         double a;
         int type;
-        cout << "Please base your coordinates off of 0, 0." << "\n";
+        cout << "Please base your coordinates off of 0, 0 expanding in the positive direction." << "\n" << "Negative numbers will NOT work." << "\n";
+        cout << "Please make sure any negative spaces fall entirely within the positive space they reside in." << "\n";
+        cout << "I am not smart enough nor have the time to compensate for details as such." << "\n \n";
         cout << "Please enter the number corresponding to the shape you wish to enter first: " << "\n";
-        cout << "1) Rectangle/Square" << "\n" << "2) Triangle" << "\n" << "3) Circular Shape" << "\n" << "4) Arc" << "\n" "5) Spandrel" "\n";
+        cout << "1) Rectangle/Square" << "\n" << "2) Triangle" << "\n" << "3) Circular Shape" << "\n";
         cout << "Enter Here: ";
         cin >> type;
         getData(type, x, y, a);
         shapes[i][0] = x;
         shapes[i][1] = y;
+        signum(a);
         shapes[i][2] = a;
     }
+    solveCentroid(shapes, sCount, Cx, Cy, Ca);
 }
 
 void getData(int type, double& x, double& y, double& a) {
@@ -64,6 +94,7 @@ void getData(int type, double& x, double& y, double& a) {
     case 3:
         int subType;
         cout << "1) Circle" << "\n" << "2) Semi-Circle" << "\n" << "3) Quarter-Circle" << "\n" << "4) Circular Sector" << "\n" << "Enter here: ";
+        cin >> subType;
         switch (subType)
         {
         case 1:
@@ -76,30 +107,11 @@ void getData(int type, double& x, double& y, double& a) {
             getCircle(3, x, y, a);//quarter
             break;
         case 4:
-            getCircularSector();
+            getCircularSector(x, y, a);
             break;
         default:
             break;
         }
-        break;
-    case 4:
-        int subType;
-        cout << "1) Segment Arc" << "\n" << "2) Semicircular Arc" << "\n" << "Enter here: ";
-        cin >> subType;
-        switch (subType)
-        {
-        case 1:
-            getArc(); //segment arc
-            break;
-        case 2:
-            getArc(); //semicircular arc
-            break;
-        default:
-            break;
-        }
-        break;
-    case 5:
-        getSpandrel(); // what is this thing?
         break;
     default:
         break;
@@ -121,7 +133,6 @@ void getRect(double& x, double& y, double& a) {
     x = ((points[0][0] + points[1][0] + points[2][0] + points[3][0]) / 4);
     y = ((points[0][1] + points[1][1] + points[2][1] + points[3][1]) / 4);
     a = (sqrt(pow((points[1][0] - points [0][0]), 2) + pow((points[1][1] - points[0][1]), 2)) * sqrt(pow((points[3][0] - points [0][0]), 2) + pow((points[3][1] - points[0][1]), 2)));
-    signum(a);
 }
 
 void getTriangle(double & x, double& y, double& a) {
@@ -139,7 +150,6 @@ void getTriangle(double & x, double& y, double& a) {
     x = ((points[0][0] + points[1][0] + points[2][0]) / 3);
     y = ((points[0][1] + points[1][1] + points[2][1]) / 3);
     a = (((points[1][1] - points[0][1]) * (points[2][0] - points[0][0])) / 2);
-    signum(a);
 }
 
 void getCircle(int subType, double & x, double& y, double& a) {
@@ -160,34 +170,67 @@ void getCircle(int subType, double & x, double& y, double& a) {
         double angle;
         cout << "Please enter the degrees of rotation: ";
         cin >> angle;
-        double theta = (angle * (M_PI/180));
+        angle = (angle * (M_PI/180));
         double ty;
         ty = ((4 * rr) / (3 * M_PI));
-        x = xx;
-        y = (ty * (sin(theta)));
+        if (angle == 0) {
+            x = xx;
+            y = ty;
+        } else {
+        x = (ty * (cos(angle)));
+        y = (ty * (sin(angle)));
+        }
         a = ((M_PI * pow(rr, 2)) / 2);
     } else {
         double angle;
         cout << "Please enter the degrees of rotation: ";
         cin >> angle;
-        double theta = (angle * (M_PI/180));
+        angle = (angle * (M_PI/180));
         double ty;
         ty = ((4 * rr) / (3 * M_PI));
-        x = (ty * (cos(theta)));
-        y = (ty * (sin(theta)));
+        if (angle == 0) {
+            x = ty;
+            y = ty;
+        } else {
+        x = (ty * (cos(angle)));
+        y = (ty * (sin(angle)));
+        }
         a = ((M_PI * pow(rr, 2)) / 4);
     }
 }
-/*
-void getCircularSector();
-void getArc();
-void getSpandrel();
-*/
 
-
-
-
-
+void getCircularSector(double & x, double& y, double& a) {
+    double xOrig;
+    double yOrig;
+    double theta;
+    double radius;
+    double angleOffset;
+    double centroid;
+    double arc;
+    double chord;
+    cout << "Please enter X: ";
+    cin >> xOrig;
+    cout << "Please enter Y: ";
+    cin >> yOrig;
+    cout << "Please enter r: ";
+    cin >> radius;
+    cout << "Please enter theta: ";
+    cin >> theta;
+    cout << "Please enter the degrees of rotation: ";
+    cin >> angleOffset;
+    chord = ((2 * radius) * (sin((theta / 2))));
+    arc = (radius * (M_PI * (theta / 180)));
+    a = (pow(radius, 2) * M_PI * (theta / 360));
+    centroid = ((2.0 / 3.0) * ((radius * chord) / arc));
+    if (angleOffset != 0) {
+        angleOffset = ((angleOffset + 90) * (M_PI/180));
+        x = ((centroid * (cos(angleOffset))) + xOrig);
+        y = ((centroid * (sin(angleOffset))) + yOrig);
+    } else {
+    x = xOrig;
+    y = centroid + yOrig;
+    }
+}
 
 void signum(double& a) {
     int space;
@@ -200,5 +243,18 @@ void signum(double& a) {
     }
 }
 
-//https://owlcation.com/stem/How-to-Solve-Centroids-of-Compound-Shapes
-//https://www.omnicalculator.com/math/centroid#centroid-of-a-set-of-points
+void solveCentroid(double shapes[][3], int sCount, double& Cx, double& Cy, double& Ca) {
+    double Axt;
+    double Ayt;
+    for (int i = 0; i < sCount; i++) {
+        double Ax;
+        double Ay;
+        Ax = (shapes[i][0] * shapes[i][2]);
+        Ay = (shapes[i][1] * shapes[i][2]);
+        Ca += shapes[i][2];
+        Axt += Ax;
+        Ayt += Ay;
+    }
+    Cx = Axt / Ca;
+    Cy = Ayt / Ca;
+}
